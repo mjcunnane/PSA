@@ -1,0 +1,59 @@
+1) Create a Folder
+	--> mkdir Testing
+        --> cd Testing
+
+2) Generate some empty files:-
+	--> type nul > test.py (touch test.py)
+	--> type nul > demo.js (touch demo.js)
+
+3) Initialize a Local Git Repository
+	--> git init
+
+4) Adding the files from directory to staging area
+	--> git add .
+
+5) Status of your working directory and staging area
+	--> git status
+
+6) Permanently record the staged changes into Git Repo History
+	--> git commit -m "first commit"
+
+7) Create a remote repo with the name origin
+	--> git remote add origin <link to github repo>
+
+8) Push the commits from local main branch to the remote origin branch
+	--> git push -u origin main
+	--> Note that After setting upstream (-u) no need to use origin main again
+
+9) You may have to login to your github for this step (if not already logged in)
+
+10) Add Readme file in github repo and pull it to see changes in local directory
+	--> git pull origin main
+	--> Note that as we have already setup upstream even git pull shall work
+
+11) Create a branch and check after checking out
+	--> git checkout -b branch_name
+	--> git branch
+
+12) Open test.py file and add print statement there, stage the changes, commit and push
+	--> test.py
+	--> print('hello world!')
+	--> git add .
+	--> git commit -m "added code in test.py"
+	--> git push -u origin backend
+	--> Note, this time backend branch has no upstream branch
+
+13) Check the github branches, create pull request and merge it.
+	--> As you are the only one who has created other branch you will see merge too
+	--> Check the process
+
+
+
+
+###################################################
+
+COLAB directions to download a file to local machine and how to save financial data using Pandas where you can convert it to an excel or other file and download it also
+
+The video is at:  https://www.youtube.com/watch?v=xK8w0LWQ5q0
+
+###################################################
