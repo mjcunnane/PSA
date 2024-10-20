@@ -66,8 +66,10 @@ v = np.empty(shape=(len(t), 2))
 
 
 # Set the Initial conditions for position and velocity
-
 r[0], v[0] = r_0, v_0
+
+# Choosing the Numerical Integration Method
+method_integration = 'euler'    #  <------
 
 # Drine the function that gets us the  acceleration (accn) vector when passed in the
 # position vector
@@ -175,7 +177,7 @@ def rk4_method(r, v, accn, dt):
         v[i] = r[i-1] + dt/6*(k1v + 2*k2v + 2*k3v + k4v)
         r[i] = r[i-1] + dt/6*(k1r + 2*k2r + 2*k3r + k4r)
         
-def numerical_integration(r, v, accn, dt, method='rk4'):
+def numerical_integration(r, v, accn, dt, method):   # ='rk4')
     '''
     This function will apply the numerical_integration based on the method chosen.
     If the method is euler or rsk4, the respective method will be implemented.
@@ -198,13 +200,32 @@ def numerical_integration(r, v, accn, dt, method='rk4'):
         raise Exception(f'You can either choose "euler" or "rk4".  Your current input for method is: {method}')
 
 # Call the numerical integration
-numerical_integration(r, v, accn, dt, method='euler')
+numerical_integration(r, v, accn, dt, method=method_integration) #  <---  this method has to be 'euler,' rk4 will not work
     
-  
 # Find the point at which Earth is at its Aphelion
 sizes = np.array([np.linalg.norm(position) for position in r])
 pos_aphelion = np.max(sizes)
 arg_aphelion = np.argmax(sizes)
 vel_aphelion = np.linalg.norm(v[arg_aphelion])
 
-print(pos_aphelion/1e9, vel_aphelion/1e3)   # uncomment this line to test
+#print(pos_aphelion/1e9, vel_aphelion/1e3)   # uncomment this line to test
+
+# Plotting the Simulated Data on the 3D axis
+plt.style.use('dark_background')
+plt.figure(figsize=(7, 12))
+plt.subplot(projection='3d')
+suptitle_str = 'RK4' if method_integration == 'rk4' else 'Euler'
+plt.suptitle(suptitle_str + ' Method',  color='r', fontsize=18, weight='bold')  #  <-- labeled as 'Euler bc rk4 will not run
+plt.title(f'At Aphelion, the Earth is {round(pos_aphelion/1e9, 1)} million km away from the Sun\nMoving at the speed of {round(vel_aphelion/1e3, 1)} km/s ' , fontsize=14, color='orange')
+#at the speed of {round(vel_aphelion/1e3, 1)} km/s ' , fontsize=14, color='orange')
+plt.plot(r[:, 0], r[:, 1], color='tab:pink', lw=2, label='Orbit')
+plt.scatter(0,0, color='yellow', s=1000, label='Sun')
+plt.scatter(r[0,0], r[0,1], s=200, label='Earth at its Perihelion')
+plt.scatter(r[arg_aphelion,0], r[arg_aphelion,1], s=200, label='Earth at its Aphelion', color='blue')
+legend = plt.legend(loc='lower right' , frameon=False)
+legend.legend_handles[1]._sizes = [150] # sun
+legend.legend_handles[2]._sizes = [80]  # earth
+legend.legend_handles[3]._sizes = [80]  # earth
+plt.axis('off')
+plt.show()
+
