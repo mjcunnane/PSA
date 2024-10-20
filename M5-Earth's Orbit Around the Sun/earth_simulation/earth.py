@@ -40,18 +40,18 @@ import numpy as np
 # Constants
 
 G = 6.6743e-11
-M_sun = 1.989e30  # kg
+M_sun = 1.989e30    # kg
 
 # Initial Position and Velocity
 
-r_0 =  np.array([147.1e9, 0]) # m
-v_0 =  np.array([0, -30.29e3]) # m/s
+r_0 =  np.array([147.1e9, 0])    # m
+v_0 =  np.array([0, -30.29e3])   # m/s
 
 
 # Time steps and total time for simulation
 
-dt = 3600 # s
-t_max = 3.154e7 # secs
+dt = 3600   # s
+t_max = 3.154e7     # secs
 
 
 # Time array to be used in numerical solution
@@ -75,7 +75,8 @@ r[0], v[0] = r_0, v_0
 def accn(r):
     return(-G*M_sun / np.linalg.norm(r)**3) * r
 
-# print(accn(r_0))    # uncomment this line to test
+   # print(accn(r_0))    # uncomment this line to test
+  
 
 # Euler Integration
 def euler_method(r, v, accn, dt):
@@ -107,19 +108,100 @@ for i in range(1, len(t)):
     r[i] = r[i-1] + v[i-1] * dt
     v[i] = v[i-1] + accn(r[i-1]) * dt
     
+
+
+# RK4 Integration
+def rk4_method(r, v, accn, dt):
     
+    """
+    Equations for euler method
+    ------------------------------
+    ODE for Position
+    --> dr/dt = v
+    --> r_new = r_old + dt/6(k1r + 2*k2r + 2*k3r + k4r)
+
+    ODE for Velocity
+    --> dv/dt = a
+    --> v_new = v_old + dt/6(k1vv + 2*k2v + 2*k3v+ k4v)
     
-# euler_method(r, v, accn, dt)  # uncomment these 2 lines to test
-# print(r)                      # uncomment these 2 lines to test
+    Method to calculate the steps
+    ------------------------------
+    Step 1: 0
+    k1v =  accn(r[i-1])
+    k1r =  v[i-1]
+    
+    Step 2:  dt/2 using step 1
+    k2v =  accn(r[i-1] + k1r * dt/2)
+    k2r =  v[i-1] + k1v * dt/2
+    
+    STEP 3:  dt/2 using step 2
+    k3v =   accn(r[i-1] + k2r * dt/2)
+    k3r =   v[i-1] + k2v * dt/2
+    
+    Step 4:  dt using step 3
+    k4v =   accn(r[i-1] + k3r * dt)
+    k4r =   v[i-1] + k3v * dt
+    
+    Parameters
+    -----------
+    r: empty array for position of size t
+    v: empty array for velocity of size t
+    a: func to calculate the accn at given position
+    dt: time step for the simulation
 
+    This function will update the empty arrays for r and v with the simulated data
+    """
+    
+    for i in range(1, len(r)):
+        
+        # Step 1: 0
+        k1v =  accn(r[i-1])
+        k1r =  v[i-1]
+    
+        # Step 2:  dt/2 using step 1
+        k2v =  accn(r[i-1] + k1r * dt/2)
+        k2r =  v[i-1] + k1v * dt/2
+    
+        # Step 3:  dt/2 using step 2
+        k3v =   accn(r[i-1] + k2r * dt/2)
+        k3r =   v[i-1] + k2v * dt/2
+    
+        # Step 4:  dt using step 3
+        k4v =   accn(r[i-1] + k3r * dt)
+        k4r =   v[i-1] + k3v * dt
 
+        # Update the r and v
+        
+        v[i] = r[i-1] + dt/6*(k1v + 2*k2v + 2*k3v + k4v)
+        r[i] = r[i-1] + dt/6*(k1r + 2*k2r + 2*k3r + k4r)
+        
+def numerical_integration(r, v, accn, dt, method='rk4'):
+    '''
+    This function will apply the numerical_integration based on the method chosen.
+    If the method is euler or rsk4, the respective method will be implemented.
+    Else it will raise an Exception.
+    
+    Parameters
+    -----------
+    r: empty array for position of size t
+    v: empty array for velocity of size t
+    a: func to calculate the accn at given position
+    dt: time step for the simulation
+    method: either "euler" or "rk4"
+    '''
+    
+    if method.lower()=='euler':
+        euler_method(r, v, accn, dt)
+    elif method.lower()=='rk4':
+        rk4_method(r, v, accn, dt)
+    else:
+        raise Exception(f'You can either choose "euler" or "rk4".  Your current input for method is: {method}')
 
-# Apply the Euler Integration on the given conditions
-
-euler_method(r, v, accn, dt)
-
+# Call the numerical integration
+numerical_integration(r, v, accn, dt, method='euler')
+    
+  
 # Find the point at which Earth is at its Aphelion
-
 sizes = np.array([np.linalg.norm(position) for position in r])
 pos_aphelion = np.max(sizes)
 arg_aphelion = np.argmax(sizes)
