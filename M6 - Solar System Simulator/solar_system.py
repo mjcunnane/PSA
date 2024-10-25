@@ -20,12 +20,13 @@ BLACK = (0 , 0, 0)
 stars_list = [
     {
         'color' : (randint(190,255), randint(190,255), randint(190,255)),
-        'center' : (randint(5, WIDTH-5), randint(5, WIDTH-5)),
+        'center' : (randint(5, WIDTH-5), randint(5, HEIGHT-5)),
         'radius' : (randint(1,2))
     }
     for star in range(450)
 ]
 #      --> print(stars_list)  #  uncomment if you want to see the random color number
+
 # Function to draw stars on the pygame window
 def draw_stars(stars_list):
       for star in stars_list:
