@@ -27,6 +27,7 @@ class SolarSystemBodies:
     
     AU = 1.496e11
     SCALE = 285/AU
+    G = 6.6743e-11
     
     
     # Constructor
@@ -45,7 +46,19 @@ class SolarSystemBodies:
         y = self.x*SolarSystemBodies.SCALE + HEIGHT//2
         pg.draw.circle(surface=WINDOW, color=self.color, center=(x, y), radius=self.radius)
         
-
+    # Method 2 - Calculate the Gravatational Force
+    def gravitational_force(self, ss_body):
+        # F = GMm/r^2
+        x_diff = ss_body.x - self.x
+        y_diff = ss_body.y - self.y
+        distance = math.sqrt(x_diff**2 + y_diff**2)
+        g_force = self.G * self.mass * ss_body.mass / distance**2
+        theta = math.atan2(y_diff/x_diff)
+        f_x = g_force * math.cos(theta)
+        f_y = g_force * math.sin(theta)
+        return f_x, f_y
+    
+        
 
 # Stars List with Color, Center, and Radius Information
 stars_list = [
